@@ -74,10 +74,12 @@ export default class MoviesDAO {
       // cursor = await movies.find({countries: {$in: countries}}, {projection: {title: 1}});
       /** Query an Array by Array Length */
       // cursor = await movies.find({countries: {$size: 2}}, {projection: {title: 1}});
-      /** Exact matches same in specific order Same with single element with $all operator */
+      /** Exact matches same in specific order of countries array. Same with single element with $all operator */
       // cursor = await movies.find({countries: countries} , {projection: {title: 1}});
+      /** Contains country name in array Same as $in {$in: ["country_name"] }*/
+      // cursor = await movies.find({countries: country_name} , {projection: {title: 1}});
       /** Query for an Element by the Array Index Position */
-      //  cursor = await movies.find({"countries.1": "Japan"} , {projection: {title: 1}});
+      //  cursor = await movies.find({"countries.1": "country_name"} , {projection: {title: 1}});
       /** $elemMatch - element that matches all the specified query criteria.
        * $elemMatch operator is generally only required when you need multiple conditions to match for an array "element".
        * */
@@ -215,6 +217,9 @@ export default class MoviesDAO {
       sortStage,
       // TODO Ticket: Faceted Search
       // Add the stages to queryPipeline in the correct order.
+      skipStage,
+      limitStage,
+      facetStage,
     ]
 
     try {
@@ -278,8 +283,8 @@ export default class MoviesDAO {
 
     // TODO Ticket: Paging
     // Use the cursor to only return the movies that belong on the current page
-    const displayCursor = cursor.limit(moviesPerPage)
-
+    const displayCursor = cursor.skip(page * moviesPerPage).limit(moviesPerPage)
+    // const displayCursor = cursor;
     try {
       const moviesList = await displayCursor.toArray()
       const totalNumMovies = page === 0 ? await movies.countDocuments(query) : 0
@@ -316,6 +321,31 @@ export default class MoviesDAO {
         {
           $match: {
             _id: ObjectId(id),
+          },
+        },
+        {
+          // lookup comments from the "comments" collection
+          $lookup: {
+            from: "comments",
+            let: { id: "$_id" },
+            pipeline: [
+              {
+                // only join comments with a match movie_id
+                $match: {
+                  $expr: {
+                    $eq: ["$movie_id", "$$id"],
+                  },
+                },
+              },
+              {
+                // sort by date in descending order
+                $sort: {
+                  date: -1,
+                },
+              },
+            ],
+            // call embedded field comments
+            as: "comments",
           },
         },
       ]
