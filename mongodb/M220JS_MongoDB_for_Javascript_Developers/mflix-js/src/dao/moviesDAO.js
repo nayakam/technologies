@@ -61,7 +61,26 @@ export default class MoviesDAO {
       // and _id. Do not put a limit in your own implementation, the limit
       // here is only included to avoid sending 46000 documents down the
       // wire.
-      cursor = await movies.find().limit(1)
+      //cursor = await movies.find().limit(1);
+
+      cursor = await movies.find(
+        { countries: { $in: countries } },
+        { projection: { title: 1 } },
+      )
+
+      /** The $all is equivalent to an $and operation of the specified values; not specific about element order in array */
+      // cursor = await movies.find({countries: {$all: countries}}, {projection: {title: 1}});
+      /** The $in is equivalent to an $or operation of the specified values; */
+      // cursor = await movies.find({countries: {$in: countries}}, {projection: {title: 1}});
+      /** Query an Array by Array Length */
+      // cursor = await movies.find({countries: {$size: 2}}, {projection: {title: 1}});
+      /** Exact matches same in specific order Same with single element with $all operator */
+      // cursor = await movies.find({countries: countries} , {projection: {title: 1}});
+      /** Query for an Element by the Array Index Position */
+      //  cursor = await movies.find({"countries.1": "Japan"} , {projection: {title: 1}});
+      /** $elemMatch - element that matches all the specified query criteria.
+       * $elemMatch operator is generally only required when you need multiple conditions to match for an array "element".
+       * */
     } catch (e) {
       console.error(`Unable to issue find command, ${e}`)
       return []
@@ -116,7 +135,7 @@ export default class MoviesDAO {
 
     // TODO Ticket: Text and Subfield Search
     // Construct a query that will search for the chosen genre.
-    const query = {}
+    const query = { genres: { $in: searchGenre } }
     const project = {}
     const sort = DEFAULT_SORT
 
@@ -296,9 +315,9 @@ export default class MoviesDAO {
       const pipeline = [
         {
           $match: {
-            _id: ObjectId(id)
-          }
-        }
+            _id: ObjectId(id),
+          },
+        },
       ]
       return await movies.aggregate(pipeline).next()
     } catch (e) {
