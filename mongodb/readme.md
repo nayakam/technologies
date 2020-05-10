@@ -1,5 +1,9 @@
 #   Mongodb
 
+*   MongoDB enables to build applications faster, handle highly diverse data types, and manage applications more efficiently at scale.
+*   MongoDB removes the complex object-relational mapping  
+*   Flexible data model means that your database schema can evolve with business requirements.
+
 ##  Architecture & Philosophy & Features
 
 *   Flexibility
@@ -13,11 +17,17 @@
 *   Availability (Replication)
 *   Run the database anywhere. 
 
+
+[M103-MongoDB Architecture](https://www.youtube.com/watch?v=Ue6o5yL9gY0&list=PLdRx_Y99aqhM32Opu8Ze3MpyzBR6M6I20)
 ![Arch](img/mongodb_architecure.png)
 
 
 ##  [CRUD](https://docs.mongodb.com/manual/crud/)
 *   [SQL to MongoDB Mapping Chart](https://docs.mongodb.com/manual/reference/sql-comparison/)
+
+#### null vs $exisits
+*   null - the { item : null } query matches documents that either contain the item field whose value is null or that do not contain the item field.
+*   $exisits - Matches the documents that contain the field, including documents where the field value is null. If is false, the query returns only the documents that do not contain the field
 
 
 ##  [Data Modeling](https://docs.mongodb.com/manual/core/data-model-design)
@@ -75,8 +85,18 @@ subsets of data
  
 ##  [Replication](https://docs.mongodb.com/manual/replication/)
 *   To maintain strong data redundancy and high availability
+*   CAP (Consistency, Availability, and Partition tolerance)
+*   Statement-based replication is platform independent ands agnostic of operating system, because statements do not depend on a specific byte makeup or instruction set.
+*   MongoDB uses statement-based replication, not binary replication.
+*   MongoDB uses a small variation of statement-based replication which reduces statements to idempotent versions so they can be repeated.
+*   Both methods of replication are accurate; however they do vary in speed and variability across operating systems.
+
+### Replica Set
 
 ![Replica Set](img/replicaset.png)
+
+*   A replica set in MongoDB is a group of mongod processes that maintain the same data set.
+
 
 ##  [Sharding](https://docs.mongodb.com/manual/sharding/)
 
