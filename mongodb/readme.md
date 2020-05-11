@@ -84,6 +84,8 @@ subsets of data
  *  
  
 ##  [Replication](https://docs.mongodb.com/manual/replication/)
+
+*   Replication duplicates the data-set.
 *   To maintain strong data redundancy and high availability
 *   CAP (Consistency, Availability, and Partition tolerance)
 *   Statement-based replication is platform independent ands agnostic of operating system, because statements do not depend on a specific byte makeup or instruction set.
@@ -96,10 +98,78 @@ subsets of data
 ![Replica Set](img/replicaset.png)
 
 *   A replica set in MongoDB is a group of mongod processes that maintain the same data set.
+*   High availability & fail-over(RAFT Protocol) 
+    *   Replica sets use fail-over to provide high availability to client applications.
+    *   In some cases, replication can provide increased read capacity as clients can send read operations to different servers.
+* Members can have different roles and specific purposes
+    *   primary
+    *   secondary
+    *   arbiter - An arbiter participates in elections but does not hold data ( does not provide data redundancy) An arbiter has priority 0 and exactly 1 election vote.
+    *   hidden -- not visible to applications (reporting purpose and backups) (must always be priority 0 members and so cannot become primary)
+    *   delayed (slaveDelay)
+        *   do vote in elections for primary, if members[n].votes is set to 1
+        *   acknowledge the "majority" write operation when members[n].votes greater than 0 and Delayed secondaries can return write acknowledgment no earlier than the configured slaveDelay.
+```json
+    {
+       "_id" : <num>,
+       "host" : <hostname:port>,
+       "arbiterOnly" : false,
+       "buildIndexes" : true,
+       "hidden" : false,
+       "priority" : 0,
+       "tags" : { },
+       "slaveDelay" : NumberLong(0),
+       "votes" : 0
+    }
+    
+```
+*   Replica sets ensure high availability. This implies that if a given node fails, regardless of its role, the availability of the system will be ensured by failing over the role of primary to an available secondary node through an election.
+*   Arbiters should not be used lightly and their utilization in the set is highly discouraged. (https://stackoverflow.com/questions/18211154/why-do-we-need-an-arbiter-in-mongodb-replication)
+*   Enabling internal authentication in a replica set implicitly enables client authentication.
+*   When connecting to a replica set, the mongo shell will redirect the connection to the primary node.
+*   rs.initiate() should only be run on one node in the replica set.
+*   An arbiter will always be an arbiter whereas a primary may step down and become a secondary and a secondary may become the primary during an election.
 
+##### Voting
+*   Members with a priority value of 0 cannot become primary and do not seek election.
+*   A non-voting member has both votes and priority equal to 0:
+*   Non-voting members must have priority of 0 and Members with priority greater than 0 cannot have 0 votes.
+*   The priority 0 member must also be a voting member (i.e. members[n].votes is greater than 0)
+*   We can have up to 50 replica set members, but only 7 of those will be voting members.
+
+#### ReplcaSet Node-1 Congig
+```
+storage:
+  dbPath: /var/mongodb/db/node1
+net:
+  bindIp: 192.168.103.100,localhost
+  port: 27011
+security:
+  authorization: enabled
+  keyFile: /var/mongodb/pki/m103-keyfile
+systemLog:
+  destination: file
+  path: /var/mongodb/db/node1/mongod.log
+  logAppend: true
+processManagement:
+  fork: true
+replication:
+  replSetName: repl-example
+```
+
+#### [oplog.rs](https://docs.mongodb.com/manual/core/replica-set-oplog/)
+* The oplog (operations log) is a special capped collection that keeps a rolling record of all operations that modify the data stored in your databases.
+* oplog.rs is central to our replication mechanism
+* Each operation in the oplog is idempotent. That is, oplog operations produce the same results whether applied once or multiple times to the target dataset.
+* The oplog.rs collection holds all the statements that get replicated across the different replica set members.
+* capped collection -- We cap the oplog.rs collection instead of dropping it entirely.
+* replication window is proportional to the system load . The size of oplog will impact the replication window
+* one operation may result in many oplog.rs entries (idempotence)
+* local database holds important information. What happen in local stays local . Any data written to local database does not get replicated to other nodes.
 
 ##  [Sharding](https://docs.mongodb.com/manual/sharding/)
 
+*   Sharding partitions the data-set into discrete parts.
 *   mongos - query router - dispatches the query to the appropriate shards based on the shard key.
 
 ### Ranged Sharding
