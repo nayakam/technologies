@@ -137,7 +137,18 @@ subsets of data
 *   The priority 0 member must also be a voting member (i.e. members[n].votes is greater than 0)
 *   We can have up to 50 replica set members, but only 7 of those will be voting members.
 
-#### ReplcaSet Node-1 Congig
+####    Fail-Over and Elections
+
+*   Nodes with priority 0 cannot be elected primary.
+*   Setting a node's priority to 0 guarantees that node will never become primary.
+*   Nodes with higher priority are more likely to be elected primary.
+*   Raising a node's priority doesn't guarantee that node will be elected primary, but it does increase the likelihood.
+*   If a majority of nodes are unavailable, elections cannot take place.
+*   Priority and recency of a node's oplog dictates which nodes are more likely to become primary.
+*   When reading from a replica set with readConcern majority all documents that have been majority committed by the replica set will be returned to the application.
+*   When two nodes go down in a three-node replica set, the third node becomes a secondary regardless of whether it started as a primary.
+
+#### ReplcaSet Node-1 Congfig
 ```
 storage:
   dbPath: /var/mongodb/db/node1
@@ -167,13 +178,91 @@ replication:
 * one operation may result in many oplog.rs entries (idempotence)
 * local database holds important information. What happen in local stays local . Any data written to local database does not get replicated to other nodes.
 
+#####   Capped Collection
+*   Capped collections are fixed-size collections that support high-throughput operations that insert and retrieve documents based on insertion order. Capped collections work in a way similar to circular buffers: once a collection fills its allocated space, it makes room for new documents by overwriting the oldest documents in the collection.
+*   You cannot shard a capped collection.
+*   The aggregation pipeline stage $out cannot write results to a capped collection.
+
+**Write Concern** : The level of acknowledgment requested from MongoDB for write operations to a standalone mongod or to replica sets or to sharded clusters.
+
+**Read Preferences** : The request is routed according to the read preference option (driver option)
+
+**Read Concern** : The request is executed according to the read concern option (query option)
+
 ##  [Sharding](https://docs.mongodb.com/manual/sharding/)
 
-*   Sharding partitions the data-set into discrete parts.
-*   mongos - query router - dispatches the query to the appropriate shards based on the shard key.
+*   Sharding partitions the data-set into discrete parts or distributed collections.
+*   mongos - query router -routes queries to shards - dispatches the query to the appropriate shards based on the shard key.
+    *   Determines which shard to route a request, it consults the config servers for the collection's metadata.
+
+### When to Shard
+*   Is it viable to economically to scale up
+    *   throug-put , speed, volume
+*   Operational impact on scalability  
+    *   backup, restore, initial sync operation cost large data set
+*   Operation workload - indexes size
+*   Single Thread operations (Aggregation pipeline commands)
+*   Geographical distributed data (Zone sharding)
+*   Our organization outgrows the most powerful servers available, limiting our vertical scaling options.
+*   Government regulations require data to be located in a specific geography.
+
+#### CSRS conf
+```
+sharding:
+  clusterRole: configsvr
+replication:
+  replSetName: csrs-example
+security:
+  keyFile: /var/mongodb/pki/keyfile
+net:
+  bindIp: localhost,192.168.103.100
+  port: 26001
+systemLog:
+  destination: file
+  path: /var/mongodb/db/csrs1.log
+  logAppend: true
+processManagement:
+  fork: true
+storage:
+  dbPath: /var/mongodb/db/csrs1
+```
+
+### [Shard Keys](https://docs.mongodb.com/manual/core/sharding-shard-key/index.html)
+As of MongoDB 4.2, the shard key value is mutable, even though the shard key itself is immutable.
+*   Shard key fields must exist in every document in the collection
+*   Shard key fields must be indexed
+*   Indexes must exit first before you can select the indexed fields for your shard key
+*   Shard keys are permanent - you can't unshard a sharded collection
+*   Shard keys are immutable. Furthermore, their values are also immutable. 
+*   Sharding is a permanent operation.
+
+#### Picking a Good Shard Key
+The goal is shard key whose values provides good write distribution
+
+*   Cardinality - High Cardinality == many possible unique shard key values
+    *   High cardinality provides more shard key values, which determines the maximum number of chunks the balancer can create.
+*   Frequency - Low Frequency == low repetition of a given unique shard key value
+    *   High frequency means that most documents fall within a particular range. If the majority of documents contain only a subset of the possible shard key values, then the chunks storing those documents become a bottleneck within the cluster.
+*   Monotonic Change - Avoid shard keys that change monotonically
+    *   If the shard key value monotonically increased, all new inserts would be routed to the chunk with maxKey as the upper bound.
+    *   Monotonically changing shard keys result in write operations going to a single shard, and are not performant.
+*   Provides Read isolation
+*   You cannot unshard a collection once sharded.
+*   You cannot update a shard key once you have sharded a collection.
+*   You cannot update the values for that shard key for any document in the collection.
+
 
 ### Ranged Sharding
+*   Targeted operations
+*   Values are “close” are more likely to reside on the same chunk.
+*   Poorly considered shard keys can result in uneven distribution of data
+
 ### Hashed Sharding
+*   Broadcast operations (range-based queries on the shard key )
+*   More even distribution data
+*   Used for shard key change monotonically
+*   You cannot specify a unique constraint on a hashed index.   
+
 ### Zoned Sharding 
 
 ##  [Security](https://docs.mongodb.com/manual/security/)
@@ -181,7 +270,9 @@ replication:
 ##  [Transactions](https://docs.mongodb.com/master/core/transactions/)
 
 *   An operation on a single document is atomic..   
-*   Supports multi-document /distributed transactions  in MongoDB 4.2.
+*   Supports multi-document /distributed transactions in MongoDB 4.2.
+*   Multi-document/Distributed transactions transactions are atomic on sharded clusters and replica sets from 4.2. (i.e. provide an “all-or-nothing” proposition):
+*   Transactions whose write operations span multiple shards will error and abort if any transaction operation reads from or writes to a shard that contains an arbiter.
 
 ##  [Storage](https://docs.mongodb.com/manual/storage/)
 
