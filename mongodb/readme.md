@@ -25,6 +25,14 @@
 ##  [CRUD](https://docs.mongodb.com/manual/crud/)
 *   [SQL to MongoDB Mapping Chart](https://docs.mongodb.com/manual/reference/sql-comparison/)
 
+
+### Explain Results
+*   queryPlanner
+*   executionStats
+
+### Covered Queries
+When an index covers a query, MongoDB can both match the query conditions and return the results using only the index keys; i.e. MongoDB does not need to examine documents from the collection to return the results.
+
 #### null vs $exisits
 *   null - the { item : null } query matches documents that either contain the item field whose value is null or that do not contain the item field.
 *   $exisits - Matches the documents that contain the field, including documents where the field value is null. If is false, the query returns only the documents that do not contain the field
@@ -268,13 +276,26 @@ The goal is shard key whose values provides good write distribution
 ##  [Security](https://docs.mongodb.com/manual/security/)
 
 ##  [Transactions](https://docs.mongodb.com/master/core/transactions/)
-
+*   In version 4.0, MongoDB supports multi-document transactions on replica sets.
+*   In version 4.2, MongoDB introduces distributed transactions, which adds support for multi-document transactions on sharded clusters and incorporates the existing support for multi-document transactions on replica sets.
 *   An operation on a single document is atomic..   
 *   Supports multi-document /distributed transactions in MongoDB 4.2.
 *   Multi-document/Distributed transactions transactions are atomic on sharded clusters and replica sets from 4.2. (i.e. provide an “all-or-nothing” proposition):
 *   Transactions whose write operations span multiple shards will error and abort if any transaction operation reads from or writes to a shard that contains an arbiter.
 
 ##  [Storage](https://docs.mongodb.com/manual/storage/)
+*   WiredTiger
+*   ~~MMAPv1~~ - Starting in version 4.2, MongoDB removes the deprecated MMAPv1 storage engine.
+*   In-Memory
+*   GridFS: GridFS is a versatile storage system that is suited to handling large files, such as those exceeding the 16 MB document size limit.
+*   journal: The journal is a log that helps the database recover in the event of a hard shutdown.
+
+### WiredTiger
+*   Default storage engine
+*   Document level locking -  multiple clients can modify different documents of a collection at the same time.
+*   Compressions -  snappy(fast)  - zlib - zstd ( MongoDB 4.2)
+*   Better performance - Stores data in B-Trees
+*   Two caches  [WT cache] -> [File system cache] -> [Disk]
 
 ##  MongoDB Reference
 
