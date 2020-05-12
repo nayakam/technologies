@@ -27,8 +27,9 @@
 
 
 ### Explain Results
-*   queryPlanner
-*   executionStats
+*   queryPlanner - Doesn't execute the query
+*   executionStats - Execute the query
+*   allPlanExecution - Execute the query
 
 ### Covered Queries
 When an index covers a query, MongoDB can both match the query conditions and return the results using only the index keys; i.e. MongoDB does not need to examine documents from the collection to return the results.
@@ -67,6 +68,8 @@ When an index covers a query, MongoDB can both match the query conditions and re
 ####    Hashed Indexes: 
 *   Hashed based values for sharding
 
+####    Wildcard Indexes
+
 ### Index Features
 
 ####    TTL Indexes: 
@@ -81,10 +84,10 @@ document
 subsets of data
 
 ####    Case Insensitive Indexes: 
-*   supports text search using case insensitive search
+*   Supports text search using case insensitive search
 
 ####    Sparse Indexes: 
-*   Only index documents which have the given field
+*   Only index documents which have the given field even it is null value
 
 
 ##  [Aggregation](https://docs.mongodb.com/manual/aggregation/)
