@@ -13,15 +13,15 @@ git-keygen -f "id_rsa_bitbucket" -t rsa -b 4096 -C "email"
 
 ```shell script
 -- Check existing keys
-git-add -l
+ssh-add -l
 -- Run git agent
-eval "$(git-agent -s)"
+eval "$(ssh-agent -s)"
 
 -- Remove all keys
 sssh-add -D
 
 -- Add the pass phrase to each git key to keychain: (option -k loads plain private keys only, skips certificates)
-git-add  -K  ~/.git/id_rsa_github
+ssh-add  -K  ~/.git/id_rsa_github
 ssh-add  -K  ~/.ssh/id_rsa_bitbucket
 
 ```
@@ -30,11 +30,11 @@ ssh-add  -K  ~/.ssh/id_rsa_bitbucket
 
 ```shell script
 
-git-add -l
+ssh-add -l
 
 
 --Check that you are connecting to the correct server
-git -vT git@github.com
+ssh -vT git@github.com
 ssh -vT username@github.com
 
 ```
