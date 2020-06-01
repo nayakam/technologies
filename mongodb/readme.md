@@ -300,6 +300,57 @@ The goal is shard key whose values provides good write distribution
 *   Better performance - Stores data in B-Trees
 *   Two caches  [WT cache] -> [File system cache] -> [Disk]
 
+## Security
+
+### Authentication vs. Authorisation
+*   Verifies the identity of a user Vs Verifies the privileges of user.
+*   Who are you ? vs What you have access to?
+*   Authentication enables Authorisation.
+
+####    Authentication Mechanisms
+
+*   Client / User
+    *   SCRAM-SHA-1
+    *   MONGODB-CR [ Deprecated as of MongoDB 3.0 ] 
+    *   X.509
+    *   External Authentication mechanism supported in Enterprise version
+        *   LDAP [Lightweight Directory Access Protocol]
+        *   Kerberos (Very secure and specific for authentication)
+            *   authentication protocol
+*   Internal (Replica Set / Sharded Cluster authenticates between them)
+    *   This automatically enables client authentication. 
+    *   Keyfile (SCRAM-SHA-1)
+        *   shared password
+        *   copy exists on each member
+        *   whitespace ignored
+        *   6-1024 Base64 characters
+    *   X.509
+    
+![](img/authentication_mechanism.png)   
+
+#####  SCRAM-SHA-1 
+*   Default in mongodb
+*   Challenge / Response authentication mechanism
+*   Username / Password
+
+###### Attacks
+
+*   [Eavesdropping](https://www.ecpi.edu/blog/what-is-eavesdropping-in-computer-security)
+    *   Attacker reads all the communication between client / server.
+    *   Client never send plain text password over network
+*   Reply
+    *   Attacker resend the valid request to server.
+    *   Mitigated by each authentication session. Unique random string valid for single session.
+*   Database compromise
+    *   Attacker reads from server persistent memory.
+    *   Hash the password before server.
+*   Malicious server
+
+#####  X.509 Certificates
+*   Certificate based
+*   Required to have TLS
+
+
 ##  MongoDB Reference
 
 *   [MongoDB Architecture Guide: Overview August 2019](https://info-mongodb-com.s3.us-east-1.amazonaws.com/MongoDB_Architecture_Guide.pdf)
