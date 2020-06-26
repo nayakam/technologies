@@ -350,6 +350,13 @@ The goal is shard key whose values provides good write distribution
 *   Certificate based
 *   Required to have TLS
 
+####
+
+```shell script
+mongod --auth --config /usr/local/etc/mongod.conf
+mongo --eval "db.getSiblingDB('admin').shutdownServer()"
+
+```
 
 ##  MongoDB Reference
 
