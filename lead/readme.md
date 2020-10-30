@@ -15,6 +15,10 @@
 *   [Episode 174: Bottleneck manager and how to tech lead](https://softskills.audio/2019/09/09/episode-174-bottleneck-manager-and-how-to-tech-lead/)
 *   [Episode 203: Downturns and conflict](https://softskills.audio/2020/03/30/episode-203-downturns-and-conflict/)
 *   [Episode 206: Micromanaging WFH and vaguely tech lead](https://softskills.audio/2020/04/20/episode-206-micromanaging-wfh-and-vaguely-tech-lead/)
+*   [The Definition of a Tech Lead](https://www.patkua.com/blog/the-definition-of-a-tech-lead/)
+*   [Patrick Kua - The Geek's Guide to Leading Teams](https://github.com/balabit/coderegation/issues/75)
+*   [GOTO 2012 • The Geek's Guide to Leading Teams • Patrick Kua](https://www.youtube.com/watch?v=N9UPW-2wL5U)
+*   [Three Common Mistakes of the First Time Tech Lead](https://www.thoughtworks.com/insights/blog/three-common-mistakes-first-time-tech-lead)
 
 
 ##  Building a Team
@@ -42,7 +46,7 @@
 *   Even it is common sense you have to put it out in team environment
 *   Introduce code / pair review culture and create a baseline checklist as a team
 *   Balancing coding and non-coding responsibilities - time management
-*   Create an environment to everybody to participate technical decisions and get behind
+*   Create an environment to everybody to participate technical decisions and get behind - Cultivating team culture
 *   Empower your team and let the team to do the work
 *   Responsible for output of the project and status of the project
 *   Involve in product roadmap
@@ -67,12 +71,15 @@
 
 *   Autonomy
     *   https://blog.newrelic.com/culture/autonomous-teams-what-they-are-and-why-you-should-care/#:~:text=With%20autonomy%2C%20you%20have%20the,either%20succeed%20or%20fail%20together.
+    *    people are trusted and encouraged to take ownership of their own work and skill development.
 *   Mastery
     *   Motivate people to pool their talents and perform at their best individually and as team player
+    *   people see no limits to their potential and are given the tools they need to continue to improve their skills.
 *   Purpose
-    *   Describe what your team does
+    *   Describe what your team does ?
     *   Who are you doing it for?
     *   Why are we doing what we do?
+    *   people are encouraged to use their skills to achieve a "greater" purpose – for instance, getting involved in a "good cause" that they are passionate about.
 
 ### Characteristics
 *   Get the Result - Driven by value
@@ -91,3 +98,16 @@
 *   Building an effective product culture is all about reducing that wall between Product and Development
 *   
 *   
+
+##  Characteristics of a Good Leader
+
+*   நேர்மை - Integrity
+*   பச்சாத்தாபம் ,இரக்கம், பரிவு, கழிவிரக்கம்,கனிவு, மனித நேயம்   - கற்பனையாக மற்றவர் உள்ளத்தில் புகுந்து அவர் உள்ளக் கிளர்ச்சியை அறிதல் - Empathy
+*   Ability to delegate
+*   Communication
+*   Self-awareness
+*   Gratitude
+*   Learning agility
+*   Influence
+*   Courage
+*   Respect
