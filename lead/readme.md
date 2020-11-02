@@ -34,6 +34,7 @@
 *   Create opportunity individual development and learning
 *   A big part of reducing the walls is investing the time to develop empathy for each other's work and struggles
 
+###  [How to Build a High Velocity Development Team](https://medium.com/javascript-scene/how-to-build-a-high-velocity-development-team-4b2360d34021)
 
 ##  Being TechLead
 *   Listening to the Team
