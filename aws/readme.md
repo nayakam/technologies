@@ -1,4 +1,4 @@
-https://stackoverflow.com/questions/49953270/what-is-the-difference-between-a-serverless-function-and-a-lambda-function#:~:text=Conceptually%20there%20is%20no%20difference,AWS%20Lambda%20(amongst%20others).
+
 
 
 
@@ -11,6 +11,16 @@ https://stackoverflow.com/questions/49953270/what-is-the-difference-between-a-se
 ## EC2 - Amazon Elastic Compute Cloud
 *   EC2 basically is your Virtual Operative System, Any operation systems can be installed and run software.
 
+
+##  AWS CloudFormation
+*   AWS CloudFormation is a service that helps you model and set up your Amazon Web Services resources
+
+```
+AWS::Lambda::Function is the Cloudformation syntax to define a Lambda function.
+
+AWS::Serverless::Function is the AWS SAM syntax to define a Lambda function which internally creates a Lambda function in Cloudformation (AWS::Lambda::Function) and related resources by convention when executing AWS SAM.
+
+```
 
 ##  CloudFront
 *   Amazon CloudFront is a Content Delivery Network (CDN) which proxies and caches web data at edge locations as close to users as possible.
@@ -46,3 +56,4 @@ https://stackoverflow.com/questions/49953270/what-is-the-difference-between-a-se
 *   Conceptually there is no difference between a serverless or a Lambda function. Serverless is the generic term for what AWS calls Lambda (and API Gateway).
 *   AWS Serverless Stack - A combination of AWS offered serverless technologies including API Gateway, Lambda, S3 and etc.
 *   Serverless: It creates the IAM role, S3 Bucket, Cloudformation Template, create, update & deploy the code. Can Invoke the program from command.
+*   https://stackoverflow.com/questions/49953270/what-is-the-difference-between-a-serverless-function-and-a-lambda-function#:~:text=Conceptually%20there%20is%20no%20difference,AWS%20Lambda%20(amongst%20others).
